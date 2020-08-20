@@ -4,11 +4,11 @@
 
 
 #USAGE
-pip3 install -r requirements.txt
-chmod +x setup.sh
-sudo su
-python3 PasSBox.py
+#pip3 install -r requirements.txt
+#chmod +x setup.sh
+#sudo su
+#python3 PasSBox.py
 
 
-Enjoy...
- Bug Reporting at xeroxxhah@pm.me
+#Enjoy...
+#Bug Reporting at xeroxxhah@pm.me
