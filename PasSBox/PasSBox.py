@@ -71,6 +71,28 @@ def sign_up():
 
 
 
+def Chng_ms_ps():
+    username = input('Enter username: ')
+    old_pass = input('Enter Old Password: ')
+    hashed_old = hash_pass(old_pass)
+    if user_exist(username):
+        oldpasfil = open('.PasSBox/' + username + '/' + username + '.mps', 'r')
+        for pas in oldpasfil:
+            if pas != hashed_old:
+                print('Access Denied!!!')
+                quit()
+            else:
+                os.remove('.PasSBox/' + username + '/' + username + '.mps')
+                newpas = input('Enter New Password:')
+                new_pass_hash = hash_pass(newpas)
+                newpasfile = open('.PasSBox/' + username + '/' + username + '.mps', 'w')
+                newpasfile.write(new_pass_hash)
+                newpasfile.close()
+                print('Password updated sucessfully...')
+    else:
+        print('No such user exists...')
+
+
 def store_pass(username, key):
     service = input('Enter service name (facebook, etc): ')
     password = input('Enter Password: ')
@@ -122,7 +144,7 @@ def view_srvices(username):
 
 def menu(username, key):
     print('Welcome ',username)
-    print('\n 1:Store Password \n 2:View Password \n 3:View Services')
+    print('\n 1:Store Password \n 2:View Password \n 3:View Services \n 4:Change Master Password')
     option = input('Choose Option: ')
     if option == '1':
         store_pass(username, key)
@@ -130,6 +152,8 @@ def menu(username, key):
         view_pass(username, key)
     elif option == '3':
         view_srvices(username)
+    elif option == '4':
+        Chng_ms_ps()
     else:
         print('Wrong Option')
 
