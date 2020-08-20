@@ -79,7 +79,7 @@ def store_pass(username, key):
     ufile.write(enc_pass)
     ufile.close()
     service_log = open('.PasSBox/'+username+'/service.log', 'a+')
-    service_log.write(service,'\n')
+    service_log.write(service+'\n')
     service_log.close()
     print('Password Stored Sucessfully...')
 
