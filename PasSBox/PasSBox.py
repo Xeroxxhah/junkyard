@@ -64,6 +64,9 @@ def sign_up():
     pfile = open('.PasSBox/'+username+'/'+username+'.mps', 'w')
     pfile.write(hashed_pass)
     pfile.close()
+    log = open('.PasSBox/'+username+'/service.log', 'w')
+    log.write('')
+    log.close()
     print('Profile Created sucessfully...')
 
 
@@ -76,15 +79,15 @@ def store_pass(username, key):
     ufile.write(enc_pass)
     ufile.close()
     service_log = open('.PasSBox/'+username+'/service.log', 'a+')
-    service_log.write(service)
+    service_log.write(service,'\n')
     service_log.close()
     print('Password Stored Sucessfully...')
 
 
 def service_exists(username,service):
-    file = open('.PasSBox/'+username+'/service.log', 'r')
-    for serv in file:
-        if serv == service:
+    with open('.PasSBox/'+username+'/service.log', 'r') as file:
+        data = file.read()
+        if service in data:
             return True
         else:
             return False
