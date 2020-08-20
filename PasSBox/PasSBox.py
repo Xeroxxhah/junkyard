@@ -22,7 +22,8 @@ def key_gen(passwords):
     return key
 
 
-
+def md5(string):
+    return hashlib.md5(string.encode).hexdigest()
 
 def encrypt(key,password):
     f = Fernet(key)
@@ -53,6 +54,7 @@ def user_exist(string):
 def sign_up():
     username = input('Enter username: ')
     password = input('Enter Master Password: ')
+    key = key_gen(password)
     hashed_pass = hash_pass(password)
     if user_exist(username):
         print('username taken... \n Chose another')
@@ -67,7 +69,32 @@ def sign_up():
     log = open('.PasSBox/'+username+'/service.log', 'w')
     log.write('')
     log.close()
+    rec_key = Fernet.generate_key()
+    hashed_key = hash_pass(rec_key.decode())
+    hkfile = open('.PasSBox/'+username+'/'+username+'.rkey', 'w')
+    hkfile.write(hashed_key)
+    hkfile.close()
     print('Profile Created sucessfully...')
+    print('Note: This is your account recovery key, keep it safe \n')
+    print(rec_key.decode())
+
+def recover():
+    username = input('Enter your username: ')
+    rec_key = input('Enter recovery key: ')
+    enc_key = hash_pass(rec_key)
+    rkfile = open('.PasSBox/'+username+'/'+username+'.rkey', 'r')
+    for hashh in rkfile:
+        if str(hashh) not in enc_key:
+            print('Key did not matched...')
+            quit()
+        else:
+            New_password = input('Enter new Password: ')
+            hashed_pass = hash_pass(New_password)
+            os.remove('.PasSBox/' + username + '/' + username + '.mps')
+            pfile = open('.PasSBox/' + username + '/' + username + '.mps', 'w')
+            pfile.write(hashed_pass)
+            pfile.close()
+            print('Password updated sucessfully...')
 
 
 
@@ -116,8 +143,6 @@ def service_exists(username,service):
     file.close()
 
 
-
-
 def view_pass(username, key):
     service = input('Enter service name: ')
     if service_exists(username,service):
@@ -144,7 +169,7 @@ def view_srvices(username):
 
 def menu(username, key):
     print('Welcome ',username)
-    print('\n 1:Store Password \n 2:View Password \n 3:View Services \n 4:Change Master Password')
+    print('\n 1:Store Password \n 2:View Password \n 3:View Services \n 4:Change Master Password \n 5:exit')
     option = input('Choose Option: ')
     if option == '1':
         store_pass(username, key)
@@ -154,6 +179,8 @@ def menu(username, key):
         view_srvices(username)
     elif option == '4':
         Chng_ms_ps()
+    elif option == '5':
+        quit()
     else:
         print('Wrong Option')
 
@@ -187,11 +214,13 @@ def banner():
 
 def main():
     banner()
-    opt = input('\n 1:Sign up \n 2:Sign in \n')
+    opt = input('\n 1:Sign up \n 2:Sign in \n 3:recover account \n')
     if opt == '1':
         sign_up()
     elif opt == '2':
         sign_in()
+    elif opt == '3':
+        recover()
     else:
         print('Wrong option!!!')
 
