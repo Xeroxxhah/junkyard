@@ -81,20 +81,23 @@ def sign_up():
 def recover():
     username = input('Enter your username: ')
     rec_key = input('Enter recovery key: ')
-    enc_key = hash_pass(rec_key)
-    rkfile = open('.PasSBox/'+username+'/'+username+'.rkey', 'r')
-    for hashh in rkfile:
-        if str(hashh) not in enc_key:
-            print('Key did not matched...')
-            quit()
-        else:
-            New_password = input('Enter new Password: ')
-            hashed_pass = hash_pass(New_password)
-            os.remove('.PasSBox/' + username + '/' + username + '.mps')
-            pfile = open('.PasSBox/' + username + '/' + username + '.mps', 'w')
-            pfile.write(hashed_pass)
-            pfile.close()
-            print('Password updated sucessfully...')
+    if user_exist(username):
+        enc_key = hash_pass(rec_key)
+        rkfile = open('.PasSBox/' + username + '/' + username + '.rkey', 'r')
+        for hashh in rkfile:
+            if str(hashh) not in enc_key:
+                print('Key did not matched...')
+                quit()
+            else:
+                New_password = input('Enter new Password: ')
+                hashed_pass = hash_pass(New_password)
+                os.remove('.PasSBox/' + username + '/' + username + '.mps')
+                pfile = open('.PasSBox/' + username + '/' + username + '.mps', 'w')
+                pfile.write(hashed_pass)
+                pfile.close()
+                print('Password updated sucessfully...')
+    else:
+        print('No such user exists...')
 
 
 
@@ -116,8 +119,10 @@ def Chng_ms_ps():
                 newpasfile.write(new_pass_hash)
                 newpasfile.close()
                 print('Password updated sucessfully...')
+                pause = input()
     else:
         print('No such user exists...')
+        pause = input()
 
 
 def store_pass(username, key):
@@ -131,6 +136,8 @@ def store_pass(username, key):
     service_log.write(service+'\n')
     service_log.close()
     print('Password Stored Sucessfully...')
+    pause = input()
+
 
 
 def service_exists(username,service):
@@ -150,40 +157,51 @@ def view_pass(username, key):
             data = file.read()
             dec = decrypt(key, data)
             print('Password: ', dec.decode())
+            pause = input()
             file.close()
     else:
         print('No such service exists')
+        pause = input()
 
 
 
 def view_srvices(username):
     file = open('.PasSBox/'+username+'/service.log', 'r')
+    print('[Services]')
     for service in file:
         print(service)
     file.close()
+    pause = input()
 
 
-
+def bye_banner():
+    os.system('clear')
+    print('-'*50)
+    print(' Thanks for using PasSBox \n Author: M.Nauman Azeem \n Report any bug at xeroxxhah@pm.me \n Bye...')
+    print('-'*50)
 
 
 
 def menu(username, key):
-    print('Welcome ',username)
-    print('\n 1:Store Password \n 2:View Password \n 3:View Services \n 4:Change Master Password \n 5:exit')
-    option = input('Choose Option: ')
-    if option == '1':
-        store_pass(username, key)
-    elif option == '2':
-        view_pass(username, key)
-    elif option == '3':
-        view_srvices(username)
-    elif option == '4':
-        Chng_ms_ps()
-    elif option == '5':
-        quit()
-    else:
-        print('Wrong Option')
-
+    while True:
+        os.system('clear')
+        banner()
+        print('Welcome ', username)
+        print('\n 1:Store Password \n 2:View Password \n 3:View Services \n 4:Change Master Password \n 5:exit')
+        option = input('Choose Option: ')
+        if option == '1':
+            store_pass(username, key)
+        elif option == '2':
+            view_pass(username, key)
+        elif option == '3':
+            view_srvices(username)
+        elif option == '4':
+            Chng_ms_ps()
+        elif option == '5':
+            bye_banner()
+            quit()
+        else:
+            print('Wrong Option')
 
 
 def sign_in():
@@ -214,7 +232,7 @@ def banner():
 
 def main():
     banner()
-    opt = input('\n 1:Sign up \n 2:Sign in \n 3:recover account \n')
+    opt = input('\n [1]---(Sign up) \n [2]---(Sign in) \n [3]---(recover account) \n [*]___\n       |-----|---\n       |-----|--- ')
     if opt == '1':
         sign_up()
     elif opt == '2':
