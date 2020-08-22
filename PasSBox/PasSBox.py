@@ -5,7 +5,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.fernet import Fernet
-
+import getpass
 
 def key_gen(passwords):
     password_provided = passwords
@@ -42,18 +42,17 @@ def hash_pass(string):
 
 
 def user_exist(string):
-    with open('.PasSBox/users.txt', 'r') as file:
-        data = file.read()
-        if string in data:
-            return True
-        else:
-            return False
+    if os.path.exists('.PasSBox/'+string):
+        return True
+    else:
+        return False
+
 
 
 
 def sign_up():
     username = input('Enter username: ')
-    password = input('Enter Master Password: ')
+    password = getpass.getpass()
     key = key_gen(password)
     hashed_pass = hash_pass(password)
     if user_exist(username):
@@ -89,7 +88,7 @@ def recover():
                 print('Key did not matched...')
                 quit()
             else:
-                New_password = input('Enter new Password: ')
+                New_password = getpass.getpass()
                 hashed_pass = hash_pass(New_password)
                 os.remove('.PasSBox/' + username + '/' + username + '.mps')
                 pfile = open('.PasSBox/' + username + '/' + username + '.mps', 'w')
@@ -103,7 +102,7 @@ def recover():
 
 def Chng_ms_ps():
     username = input('Enter username: ')
-    old_pass = input('Enter Old Password: ')
+    old_pass = getpass.getpass()
     hashed_old = hash_pass(old_pass)
     if user_exist(username):
         oldpasfil = open('.PasSBox/' + username + '/' + username + '.mps', 'r')
@@ -113,7 +112,7 @@ def Chng_ms_ps():
                 quit()
             else:
                 os.remove('.PasSBox/' + username + '/' + username + '.mps')
-                newpas = input('Enter New Password:')
+                newpas = getpass.getpass()
                 new_pass_hash = hash_pass(newpas)
                 newpasfile = open('.PasSBox/' + username + '/' + username + '.mps', 'w')
                 newpasfile.write(new_pass_hash)
@@ -143,10 +142,11 @@ def store_pass(username, key):
 def service_exists(username,service):
     with open('.PasSBox/'+username+'/service.log', 'r') as file:
         data = file.read()
-        if service in data:
-            return True
-        else:
-            return False
+        for serv in data:
+            if serv == service:
+                return True
+            else:
+                return False
     file.close()
 
 
@@ -172,6 +172,31 @@ def view_srvices(username):
         print(service)
     file.close()
     pause = input()
+
+
+def remove_acc():
+    print('Account Remove'.upper())
+    username = input('Enter username:')
+    password = getpass.getpass()
+    if user_exist(username):
+        hashed_pass = hash_pass(password)
+        pfile = open('.PasSBox/'+username+'/'+username+'.mps')
+        stored_hash =  pfile.read()
+        if stored_hash == hashed_pass:
+            print('Do you really want to remove your account? \nAfter this oprestion none of your data will be left!')
+            print('If you are sure then type "Yes do it"')
+            us_ch = input('Remove Account? ')
+            if us_ch == "yes do it":
+                os.system('rm -rf .PasSBox/'+username)
+            else:
+                print('Aborting...')
+                quit()
+        else:
+            print('Access Denied!!!')
+    else:
+        print('No such user exists...')
+        quit()
+
 
 
 def bye_banner():
@@ -206,7 +231,7 @@ def menu(username, key):
 
 def sign_in():
     username = input('Enter username: ')
-    password = input('Enter Master password: ')
+    password = getpass.getpass()
     hashed_pass = hash_pass(password)
     key = key_gen(password)
     if user_exist(username):
@@ -232,13 +257,17 @@ def banner():
 
 def main():
     banner()
-    opt = input('\n [1]---(Sign up) \n [2]---(Sign in) \n [3]---(recover account) \n [*]___\n       |-----|---\n       |-----|--- ')
+    opt = input('\n [1]---(Sign up) \n [2]---(Sign in) \n [3]---(Recover Account) \n [4]---(Remove Account)\n [5]---(Exit)\n [*]___\n       |-----|---\n       |-----|--- ')
     if opt == '1':
         sign_up()
     elif opt == '2':
         sign_in()
     elif opt == '3':
         recover()
+    elif opt == '4':
+        remove_acc()
+    elif opt == '5':
+        quit()
     else:
         print('Wrong option!!!')
 
