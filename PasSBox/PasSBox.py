@@ -142,11 +142,10 @@ def store_pass(username, key):
 def service_exists(username,service):
     with open('.PasSBox/'+username+'/service.log', 'r') as file:
         data = file.read()
-        for serv in data:
-            if serv == service:
-                return True
-            else:
-                return False
+        if service in data:
+            return  True
+        else:
+            return False
     file.close()
 
 
