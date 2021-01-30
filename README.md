@@ -2,7 +2,7 @@
 <br>
  A tool to safeguard your passwords with high level encryption.
 <br>
-### USAGE: 
+# Installation 
 <br>
 1:pip3 install -r requirements.txt 
 <br>
@@ -12,6 +12,6 @@
 <br>
 4:python3 PasSBox.py  
 <br>
-## Note:
+# Note
 <br>
 Bug Reporting at xeroxxhah@pm.me  
