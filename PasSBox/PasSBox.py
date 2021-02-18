@@ -1,4 +1,5 @@
 import hashlib
+import glob
 import os
 import base64
 from cryptography.hazmat.backends import default_backend
@@ -97,6 +98,21 @@ def recover():
                 print('Password updated sucessfully...')
     else:
         print('No such user exists...')
+'''
+def service_exists(username,service):
+    with open('.PasSBox/'+username+'/service.log', 'r') as file:
+        data = file.read()
+        if service in data:
+            return  True
+        else:
+            return False
+    file.close()
+'''
+def service_exists(username,service):
+    if os.path.exists('.PasSBox/'+username+'/'+service+'.pas'):
+        return True
+    else:
+        return False
 
 
 
@@ -124,6 +140,7 @@ def Chng_ms_ps():
         pause = input()
 
 
+
 def store_pass(username, key):
     service = input('Enter service name (facebook, etc): ')
     password = input('Enter Password: ')
@@ -139,14 +156,39 @@ def store_pass(username, key):
 
 
 
-def service_exists(username,service):
-    with open('.PasSBox/'+username+'/service.log', 'r') as file:
-        data = file.read()
-        if service in data:
-            return  True
-        else:
-            return False
-    file.close()
+
+def chngPass(username,key):
+    service = input('Enter Service name: ')
+    if service_exists(username,service):
+        os.remove('.PasSBox/'+username+'/'+service+'.pas')
+        password = input('Enter Password: ')
+        enc_pass = encrypt(key, password.encode())
+        ufile = open('.PasSBox/'+username+'/'+service+'.pas', 'wb')
+        ufile.write(enc_pass)
+        ufile.close()
+        service_log = open('.PasSBox/'+username+'/service.log', 'a+')
+        service_log.write(service+'\n')
+        service_log.close()
+        print('Password Stored Sucessfully...')
+        pause = input()
+    else:
+        print('Service does not exist')
+
+
+def del_service(username):
+    service = input('Enter service name: ')
+    if service_exists(username,service):
+        os.remove('.PasSBox/'+username+'/'+service+'.pas')
+        print('Service removed')
+    else:
+        print('Service does not exist')
+
+
+
+
+
+
+
 
 
 def view_pass(username, key):
@@ -173,6 +215,17 @@ def view_srvices(username):
     pause = input()
 
 
+def viewServices(username):
+    #os.chdir('./.PasSBox/'+username+'/')
+    for files in glob.glob('./.PasSBox/'+username+'/*.pas'):
+        print(files[16:-4])
+    pause = input()
+    
+
+
+
+
+
 def remove_acc():
     print('Account Remove'.upper())
     username = input('Enter username:')
@@ -183,7 +236,7 @@ def remove_acc():
         stored_hash =  pfile.read()
         if stored_hash == hashed_pass:
             print('Do you really want to remove your account? \nAfter this oprestion none of your data will be left!')
-            print('If you are sure then type "Yes do it"')
+            print('If you are sure then type "yes do it"')
             us_ch = input('Remove Account? ')
             if us_ch == "yes do it":
                 os.system('rm -rf .PasSBox/'+username)
@@ -211,18 +264,21 @@ def menu(username, key):
         os.system('clear')
         banner()
         print('Welcome ', username)
-        print('\n 1:Store Password \n 2:View Password \n 3:View Services \n 4:Change Master Password \n 5:exit')
+        print('\n 1:Store Password \n 2:View Password \n 3:View Services \n 4:change Password \n 5:delete Password \n 6:Change Master Password \n 7:exit')
         option = input('Choose Option: ')
         if option == '1':
             store_pass(username, key)
         elif option == '2':
             view_pass(username, key)
         elif option == '3':
-            view_srvices(username)
+            viewServices(username)
         elif option == '4':
-            Chng_ms_ps()
+            chngPass(username,key)
         elif option == '5':
-            bye_banner()
+            del_service(username)
+        elif option == '6':
+            Chng_ms_ps()
+        elif option == '7':
             quit()
         else:
             print('Wrong Option')
