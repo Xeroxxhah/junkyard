@@ -9,7 +9,7 @@ A safe and secure way to store passwords.
 First install all the requirements in ```requirements.txt``` using ```pip install -r requirements.txt``` &nbsp;
 then run the script..cheers!
  ### Windows Release:
- you can download a version for windows from this [link](https://github.com/Xeroxxhah/junkyard/issues).
+ you can download a version for windows from this [link](https://drive.google.com/uc?export=download&id=1XMRQpZhoZKxw2ykJ3CMbV1-L3JjFil6M).
 #### Tested Operating system's:
 - Kali linux and Windows
 #### Upcoming update:
