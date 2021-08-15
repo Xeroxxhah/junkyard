@@ -17,6 +17,6 @@ then run the script..cheers!
 ### Bug Report:
 Report a issue at https://github.com/Xeroxxhah/junkyard/issues
 ### Contributions:
-All contributions are welcomed.if you have an suggestion for improvement you can mail me at x-neron@pm.me.
+All contributions are welcomed.if you have an suggestion for improvement you can mail me at xeroxxhah@pm.me.
 ### License:
 Distributed under GPL3.0.
